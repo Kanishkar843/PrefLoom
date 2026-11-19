@@ -1,0 +1,11 @@
+{
+  "project": "PrefLoom",
+  "browser": "installed Chrome, headless Playwright",
+  "status": "PASSED",
+  "screenshots": [
+    "docs/assets/desktop.png",
+    "docs/assets/light.png",
+    "docs/assets/mobile.png"
+  ],
+  "console_errors": []
+}

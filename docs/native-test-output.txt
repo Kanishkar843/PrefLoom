@@ -1,0 +1,3 @@
+5 passed in 12.49s
+Command: .venv\Scripts\python.exe -m pytest -q
+Recorded from executed command output on 2026-11-20.

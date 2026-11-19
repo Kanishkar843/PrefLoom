@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: prefloom
+      POSTGRES_USER: prefloom
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes: ["db:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prefloom"]
+      interval: 5s
+      retries: 12
+    mem_limit: 512m
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://prefloom:${POSTGRES_PASSWORD}@db:5432/prefloom
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready')"]
+      interval: 10s
+      retries: 6
+    mem_limit: 768m
+volumes:
+  db:
