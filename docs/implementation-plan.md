@@ -10,3 +10,5 @@
 - [ ] Build and verify isolated Docker Compose stack with restart persistence.
 - [ ] Reconcile documentation with executed evidence and integrate a feature branch preserving origin/main.
 - [ ] Publish only when mandatory release gates pass.
+
+Delivery milestone: tested feature branch pushed and PR created. Final live CI state is linked from README; optional provider checks remain explicitly blocked without credentials.
