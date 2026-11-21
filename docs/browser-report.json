@@ -1,11 +1,17 @@
 {
-  "project": "PrefLoom",
-  "browser": "installed Chrome, headless Playwright",
   "status": "PASSED",
-  "screenshots": [
-    "docs/assets/desktop.png",
-    "docs/assets/light.png",
-    "docs/assets/mobile.png"
+  "frontend": "React + TypeScript",
+  "journeys": [
+    "fresh session",
+    "memory approval",
+    "profile extraction approval",
+    "multi-step search",
+    "reload persistence",
+    "error retry",
+    "comparison",
+    "memory history",
+    "dark/light",
+    "390px responsive"
   ],
   "console_errors": []
 }

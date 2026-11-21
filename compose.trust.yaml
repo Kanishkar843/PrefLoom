@@ -1,0 +1,8 @@
+services:
+  api:
+    build:
+      context: .
+      secrets: [build_ca]
+secrets:
+  build_ca:
+    file: ${BUILD_CA_FILE:?Set BUILD_CA_FILE to an existing trusted public CA bundle}

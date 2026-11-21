@@ -9,3 +9,5 @@ Official documentation consulted for API patterns:
 - https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html
 
 No nontrivial tutorial implementation was copied. This list is not a legal audit; consult each installed distribution's license files. A generated package inventory is recorded in dependencies.json when available.
+
+The new frontend uses React, React DOM, TypeScript, Vite, ESLint and Vitest, pinned by frontend/package-lock.json. Original CSS primitives are shared across these three first-party projects. requirements-runtime.lock lists minimal runtime pins; the current acceptance Docker image uses the full requirements.lock, including browser/lint/test tooling, to reuse verified build layers. Package license files remain in installed distributions. Public CA roots used for the local build are external BuildKit secrets, not source assets.

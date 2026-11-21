@@ -1,9 +1,22 @@
-# Deployment status
+# Windows and Docker setup
 
-Native startup: see README. Port: 8000. Python used for tests: 3.12.12. `docker compose up --build` is supplied but NOT RUN because Docker/WSL are unavailable. `docker compose down` stops services; omit `-v` to retain data.
+Use Python 3.12, Node 22, and one project stack at a time. Install dependencies using the README commands and build `frontend` before starting Uvicorn. Native default storage is SQLite; `DATABASE_URL` selects PostgreSQL and requires `alembic upgrade head` first.
 
-Required integration sequence: build images; start DB; run `alembic upgrade head`; call `/health` and `/docs`; execute the product workflow; stop/restart API; assert data survived; run database-specific tests. Do not publish until these checks pass.
+WSL and Docker Desktop were installed with authorization. No automatic Windows restart or security-policy bypass occurred. WSL 3.0.5 / Linux kernel 6.18.58 and Docker Engine 29.9.3 are operational on this host. Local portable PostgreSQL 17.12 acceptance ran separately from Docker.
 
-Existing GitHub destination: Kanishkar843/PrefLoom. Remote HEAD was detected; no push occurred. To preserve existing history, review the remote, fetch it and prepare an integration branch/PR after acceptance checks. Do not force-push this new local history over the existing repository.
+Set a strong `POSTGRES_PASSWORD` in an ignored `.env`, then run:
 
-No privileged system changes were made. WSL installation would use `wsl --install` in an authorized Administrator PowerShell followed by the required reboot; Docker Desktop setup and WSL integration must then be completed by an authorized user. These steps were not executed.
+```powershell
+docker compose build
+docker compose up -d --wait
+$env:ACCEPTANCE_URL='http://127.0.0.1:8000'
+$env:COMPOSE_PROJECT_NAME='prefloom'
+python tests/compose_acceptance.py
+docker compose down
+```
+
+Use the same Compose project name for every command (or set `COMPOSE_PROJECT_NAME` before starting). Omit `-v` to retain data. The API is nonroot, binds on loopback externally, has a readiness check, and applies Alembic before startup. PostgreSQL has no public host port. Container limits are 512MB database / 768MB API.
+
+On networks requiring an enterprise certificate, export only trusted public CA certificates to a PEM outside this repository, set `BUILD_CA_FILE`, and add `-f compose.yaml -f compose.trust.yaml` to build. BuildKit mounts it temporarily; TLS verification remains enabled. Do not include private keys or commit a machine trust bundle. Pip allows a 120-second download timeout and bounded retries.
+
+The acceptance script creates a disposable demo session and restarts only the specified project's API. Never point it at a production stack. Current executed evidence is in TEST_REPORT.md. Publication uses a feature branch preserving existing remote history; never force-push main.

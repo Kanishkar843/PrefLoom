@@ -5,3 +5,5 @@ __pycache__/
 *.db
 .env
 node_modules/
+
+frontend/dist/
