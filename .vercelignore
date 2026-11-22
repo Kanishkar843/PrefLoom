@@ -1,0 +1,12 @@
+.git
+.venv
+.cache
+node_modules
+frontend/node_modules
+tests
+integration
+docs/assets
+*.db
+.env
+.env.*
+!.env.example
