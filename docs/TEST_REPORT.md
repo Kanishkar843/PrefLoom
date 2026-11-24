@@ -27,3 +27,7 @@ Docker acceptance output is recorded in docker-test-output.txt. Earlier image bu
 No RAM/CPU benchmark or live LLM latency is claimed for PrefLoom. Test servers are isolated from existing user instances.
 
 Published branch: `feat/verified-agent-react`; [PR](https://github.com/Kanishkar843/PrefLoom/pull/1), [Actions](https://github.com/Kanishkar843/PrefLoom/actions). Existing remote main is an ancestor of the delivered branch. No force push or main overwrite occurred.
+
+## Production verification — 2026-11-24
+
+See [CLOUD_DELIVERY](CLOUD_DELIVERY.md) for actual Vercel, Neon, provider, browser and model results. Earlier local results above retain their original scope.

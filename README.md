@@ -1,8 +1,15 @@
 # PrefLoom
 
+[Open live application](https://prefloom.vercel.app) · [Interactive API](https://prefloom.vercel.app/docs) · [Cloud verification](docs/CLOUD_DELIVERY.md)
+
+Live Groq GPT-OSS 20B planning is enabled. A real request produced search, compare and explanation steps; natural-language profile extraction produced a typed proposal. State changes remain behind human approval. Opportunity data is synthetic and ranking remains deterministic.
+
+![Verified production interface](docs/assets/production-desktop.png)
+
+
 A career workspace with SQL-backed preference memory and human-approved typed actions.
 
-**Status: native and PostgreSQL workflows verified; Docker startup/restart verified; live-provider credentials are unavailable.** This repository is original first-party code authored for this assignment. It is not a clone or reskin. No live job data, production-readiness or successful GitHub publishing is claimed.
+**Status: deployed on Vercel with Neon PostgreSQL; live Groq planning and profile extraction verified.** This repository is original first-party code authored for this assignment. It is not a clone or reskin. Opportunity listings are explicitly synthetic. Feature-branch delivery and production verification are documented below.
 
 ## React frontend setup
 
@@ -67,7 +74,7 @@ WSL and Docker Desktop are installed and the Linux engine is running. Open `/mnt
 
 - PASSED: 10 native backend tests, 1 real PostgreSQL integration test including API restart and concurrent approvals.
 - PASSED: React/TypeScript typecheck, ESLint, 4 frontend tests, Vite production build and browser workflow (including error/retry, dark/light and mobile).
-- IMPLEMENTED: optional real HTTPS provider planner and semantic structured profile extraction; live-provider smoke test is BLOCKED because credentials are not configured. Mocked transport tests are identified as such.
+- VERIFIED: real HTTPS Groq planner and semantic structured profile extraction passed production smoke tests on 2026-11-24. Mocked transport tests are identified as such.
 - PASSED: Docker image build, Compose readiness, approval gating and persisted conversation/memory after API restart. No Windows restart was performed.
 - NOT RUN: GitHub Actions; feature branch and pull request are published; see linked CI for current status.
 
