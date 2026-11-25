@@ -59,6 +59,9 @@ try:
         page.goto(f"http://127.0.0.1:{port}", wait_until="networkidle")
         expect(page.get_by_role("heading", name="Make room for your next chapter.")).to_be_visible()
         page.screenshot(path=str(root / "docs/assets/landing.png"), full_page=True)
+        page.set_viewport_size({"width": 390, "height": 844})
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+        page.set_viewport_size({"width": 1440, "height": 1000})
         page.get_by_role("link", name="Enter your workspace").click()
         expect(page.locator(".page-heading h1")).to_have_text("Conversation")
         page.get_by_role("link", name="Memory & profile", exact=True).click()
@@ -73,6 +76,9 @@ try:
         expect(page.get_by_role("button", name="Approve", exact=True)).to_be_visible()
         page.get_by_role("button", name="Approve", exact=True).click()
         expect(page.locator("#memory")).to_contain_text("Remote")
+        with page.expect_download() as download:
+            page.get_by_role("button", name="Export my memory").click()
+        assert download.value.suggested_filename == "prefloom-memory.json"
         page.get_by_label("Profile summary").fill(
             "Python engineer with 3 years SQL and remote work"
         )

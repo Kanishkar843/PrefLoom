@@ -11,3 +11,5 @@ body,html[data-theme=light] body{background:var(--bg);color:var(--ink)}body:befo
 @media(max-width:1100px){.workspace{grid-template-columns:1fr 1fr}.workspace>main{grid-column:1/-1;grid-row:1}.review{grid-column:auto}.review .timeline{display:block}}@media(max-width:720px){.workspace,.experience[data-page=memory] .workspace{display:flex;flex-direction:column}.loom-art{height:340px}.workspace>*{width:100%}}
 
 .experience[data-page=memory] .workspace>main,.experience[data-page=activity] .workspace>main{display:block;grid-column:1/-1}.experience[data-page=memory] .workspace>main>*:not(.status):not(.error),.experience[data-page=activity] .workspace>main>*:not(.status):not(.error){display:none}
+
+.loom-art{overflow:clip}

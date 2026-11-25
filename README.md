@@ -12,13 +12,13 @@ PrefLoom combines multi-step agent planning, persistent conversation memory and 
 
 A rose-and-plum glass interface with a dedicated landing page and separate Conversation, Memory & profile, and Approvals & activity pages. Navigation preserves workspace state; the original approval and persistence workflows remain available.
 
-![New PrefLoom landing page](docs/assets/landing.png)
+![New PrefLoom landing page](docs/assets/production-landing.png)
 
 ## Production preview
 
 ![PrefLoom running on Vercel](docs/assets/production-desktop.png)
 
-Captured from the deployed application. The galleries below show separately captured local test journeys.
+Captured from the redesigned application deployed on 25 November 2026. The galleries below show separately captured local test journeys.
 
 <details>
 <summary>View light theme and mobile screenshots</summary>
@@ -175,3 +175,5 @@ The integration suite requires an isolated real PostgreSQL `TEST_DATABASE_URL`; 
 First-party application code, interface designs and fixtures are original to this project. Dependencies and model artifacts retain their third-party notices. No first-party project license has been selected.
 
 Development is published on `feat/verified-agent-react` through [PR #1](https://github.com/Kanishkar843/PrefLoom/pull/1), preserving existing `main` history. Deployment status, software acceptance and evaluated-model quality are reported separately.
+
+[Frontend redesign and verification](docs/FRONTEND_REDESIGN.md)
