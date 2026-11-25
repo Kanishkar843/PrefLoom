@@ -24,7 +24,8 @@ from .db import (
     SessionLease,
     MemoryRevision,
 )
-from .agent import graph
+from .agent import graph, ProfileFields
+from .security import SecurityBoundary
 
 
 @asynccontextmanager
@@ -70,12 +71,16 @@ async def bounds(request: Request, call_next):
     return response
 
 
+app.add_middleware(SecurityBoundary)
+
+
 def db():
     with Session() as session:
         yield session
 
 
 def user(request: Request, s=Depends(db)):
+    require_demo_mode()
     token = request.headers.get("Authorization", "").removeprefix("Bearer ")
     u = s.scalar(
         select(User).where(
@@ -85,7 +90,7 @@ def user(request: Request, s=Depends(db)):
     if not u:
         raise HTTPException(401, "Create a local demo session first")
     lease = s.get(SessionLease, u.id)
-    if lease and (
+    if not lease or (
         lease.revoked
         or datetime.fromisoformat(lease.expires_at) <= datetime.now(timezone.utc)
     ):
@@ -100,12 +105,21 @@ class Chat(BaseModel):
 
 
 class Memory(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     key: str = Field(min_length=1, max_length=64, pattern=r"^[a-zA-Z0-9_ -]+$")
     value: str = Field(min_length=1, max_length=500)
 
 
 class Decision(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
     approved: bool
+
+
+def require_demo_mode():
+    # Anonymous bearer sessions are only an offline local demonstration.
+    # Never let an old demo token become a provider credential after a mode switch.
+    if os.getenv("VERCEL") or os.getenv("AGENT_MODE", "offline") != "offline":
+        raise HTTPException(503, "Managed authentication is required; demo access is disabled")
 
 
 @app.get("/health")
@@ -129,10 +143,11 @@ def ready(s=Depends(db)):
 
 @app.post("/sessions")
 def session(s=Depends(db)):
+    require_demo_mode()
     token = secrets.token_urlsafe(32)
     u = User(token_hash=hashlib.sha256(token.encode()).hexdigest())
     s.add(u)
-    s.commit()
+    s.flush()
     s.add_all(
         [
             Profile(user_id=u.id, data={}),
@@ -234,7 +249,7 @@ def decide(approval_id: str, data: Decision, u=Depends(user), s=Depends(db)):
                 )
             )
         elif a.action == "update_profile":
-            s.get(Profile, u).data = a.payload
+            s.get(Profile, u).data = ProfileFields.model_validate(a.payload).model_dump()
         else:
             raise HTTPException(400, "Unsupported action")
     a.status = "approved" if data.approved else "rejected"
