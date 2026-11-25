@@ -1,0 +1,15 @@
+.venv/
+.cache/
+__pycache__/
+.pytest_cache/
+*.db
+.env
+node_modules/
+
+frontend/dist/
+.vercel
+.env*
+
+.env.*
+.vercel/
+public/
