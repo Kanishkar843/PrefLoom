@@ -8,6 +8,12 @@
 
 PrefLoom combines multi-step agent planning, persistent conversation memory and human-approved actions. A React and TypeScript interface makes preferences, proposed changes and tool execution visible; FastAPI, LangGraph and PostgreSQL keep the workflow typed and auditable.
 
+## Interface redesign
+
+A rose-and-plum glass interface with a dedicated landing page and separate Conversation, Memory & profile, and Approvals & activity pages. Navigation preserves workspace state; the original approval and persistence workflows remain available.
+
+![New PrefLoom landing page](docs/assets/landing.png)
+
 ## Production preview
 
 ![PrefLoom running on Vercel](docs/assets/production-desktop.png)
