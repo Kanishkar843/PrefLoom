@@ -100,3 +100,35 @@ def test_chunked_oversized_body_rejected():
     asyncio.run(SecurityBoundary(downstream)({"type": "http"}, receive, send))
     assert not called
     assert sent[0]["status"] == 413
+
+
+def test_slow_upload_times_out_without_calling_application():
+    import asyncio
+    from app.security import SecurityBoundary
+
+    called, sent = [], []
+
+    async def downstream(*args):
+        called.append(True)
+
+    async def receive():
+        await asyncio.sleep(1)
+        return {"type": "http.request", "body": b""}
+
+    async def send(message):
+        sent.append(message)
+
+    asyncio.run(
+        SecurityBoundary(downstream, body_timeout=0.01)({"type": "http"}, receive, send)
+    )
+    assert not called
+    assert sent[0]["status"] == 408
+    assert dict(sent[0]["headers"])[b"cache-control"] == b"no-store"
+
+
+def test_response_request_id_matches_log(c, caplog):
+    import logging
+
+    with caplog.at_level(logging.INFO, logger="prefloom"):
+        response = c.get("/health")
+    assert "request_id=" + response.headers["x-request-id"] in caplog.text

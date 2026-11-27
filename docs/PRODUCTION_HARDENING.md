@@ -55,3 +55,11 @@ Commands run on 2026-11-25:
 This branch intentionally cannot serve deployed private workflows until managed auth is implemented. Do not publish it as a completed release. Existing live deployment remains unchanged. Distributed quotas, approval lifecycle expansion, retention and managed identity remain outstanding.
 
 Neon console SSO was reached through the signed-in Vercel account. Console access is blocked by Neon account email activation, which the account holder must complete. No auth resources or production data were changed.
+
+## 2026-11-27 incremental verification
+
+Added a 15-second total request-body deadline (HTTP 408) alongside the existing 64 KiB cap. Response correlation IDs now match server request logs. Slow-upload rejection and log correlation are covered by automated tests.
+
+Validation: `python -m pytest tests -q` — 20 passed; `python -m ruff check app tests --select E9,F63,F7,F82` — passed; `git diff --check` — passed. These are local tests, not deployed or real-provider acceptance.
+
+GitHub CLI CI lookup failed certificate verification (unknown certificate authority). Certificate validation was not disabled. Neon setup remains pending browser access; no production changes were made.

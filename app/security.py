@@ -1,18 +1,21 @@
 """HTTP boundary controls; no credentials, request bodies, or paths are logged."""
 
 import json
+import asyncio
 from uuid import uuid4
 
 
 class SecurityBoundary:
-    def __init__(self, app, max_body=65536):
+    def __init__(self, app, max_body=65536, body_timeout=15):
         self.app = app
         self.max_body = max_body
+        self.body_timeout = body_timeout
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
             return await self.app(scope, receive, send)
         request_id = str(uuid4())
+        scope.setdefault("state", {})["request_id"] = request_id
         headers = [
             (b"x-request-id", request_id.encode()),
             (b"x-content-type-options", b"nosniff"),
@@ -38,8 +41,26 @@ class SecurityBoundary:
 
         chunks = []
         size = 0
+        deadline = asyncio.get_running_loop().time() + self.body_timeout
         while True:
-            message = await receive()
+            try:
+                remaining = deadline - asyncio.get_running_loop().time()
+                message = await asyncio.wait_for(receive(), timeout=max(0, remaining))
+            except TimeoutError:
+                await secure_send(
+                    {
+                        "type": "http.response.start",
+                        "status": 408,
+                        "headers": [(b"content-type", b"application/json")],
+                    }
+                )
+                await secure_send(
+                    {
+                        "type": "http.response.body",
+                        "body": b'{"detail":"Request body timed out"}',
+                    }
+                )
+                return
             if message["type"] == "http.disconnect":
                 return
             body = message.get("body", b"")

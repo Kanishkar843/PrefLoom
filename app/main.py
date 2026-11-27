@@ -42,7 +42,7 @@ limits = defaultdict(deque)
 
 @app.middleware("http")
 async def bounds(request: Request, call_next):
-    rid = str(uuid4())
+    rid = request.state.request_id
     key = hashlib.sha256(
         request.headers.get(
             "authorization", request.client.host if request.client else "local"
