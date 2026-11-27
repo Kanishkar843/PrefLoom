@@ -1,5 +1,7 @@
 name: PrefLoom acceptance
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   acceptance:
     runs-on: ubuntu-latest

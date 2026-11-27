@@ -92,7 +92,11 @@ def test_concurrent_approval_exactly_once(c):
 
 def test_provider_structured_profile_is_only_a_proposal(c, monkeypatch):
     from app import provider
+    from app.main import user
 
+    session = c.post("/sessions").json()
+    # Isolate planner behavior from the deliberately disabled anonymous provider API.
+    monkeypatch.setitem(app.dependency_overrides, user, lambda: session["user_id"])
     monkeypatch.setenv("AGENT_MODE", "provider")
     monkeypatch.setattr(
         provider,
@@ -111,7 +115,7 @@ def test_provider_structured_profile_is_only_a_proposal(c, monkeypatch):
             ]
         },
     )
-    h = {"Authorization": "Bearer " + c.post("/sessions").json()["token"]}
+    h = {"Authorization": "Bearer " + session["token"]}
     r = c.post("/chat", headers=h, json={"text": "Extract my profile"}).json()
     assert r["mode"] == "provider-backed"
     assert r["proposal"]["payload"]["experience_years"] == 5
